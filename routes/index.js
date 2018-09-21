@@ -1,19 +1,45 @@
-var express = require('express');
-var router = express.Router();
-var jwt = require('jsonwebtoken');
+"use strict";
 
-/* POST do login. */
-router.post('/login', (req, res) => {
-  let token = jwt.sign({ id: 123, username: 'test' }, process.env.PRIVATE_KEY, {
-    algorithm: 'RS256',
-    expiresIn: '3 days'
+const express = require('express');
+const router = express.Router();
+const createError = require('http-errors');
+const jwt = require('jsonwebtoken');
+const AccountHandler = require('../handlers/AccountHandler');
+
+/* Do login. */
+router.post('/login', (req, res, next) => {
+  const authData = req.body;
+  AccountHandler.instance.login(authData.uname, authData.psw).then((result) => {
+    if (!result[0]) {
+      next(result[1]);
+      return;
+    }
+    result[1].name = authData.uname;
+    let token = jwt.sign(result[1], process.env.PRIVATE_KEY, {
+      algorithm: 'RS256',
+      expiresIn: '3 days'
+    });
+
+    res.send("Bearer " + token);
   });
-  res.send("Bearer " + token);
 });
 
-/* POST do regist. */
-router.post('/regist', (req, res) => {
-  res.send('success.');
+/* Do regist. */
+router.post('/regist', (req, res, next) => {
+  const registData = req.body;
+  AccountHandler.instance.regist(registData.name, registData.psw, registData.psw_repeat).then((result) => {
+    if (!result[0]) {
+      next(result[1]);
+      return;
+    }
+    result[1].name = registData.name;
+    let token = jwt.sign(result[1], process.env.PRIVATE_KEY, {
+      algorithm: 'RS256',
+      expiresIn: '3 days'
+    });
+
+    res.send("Bearer " + token);
+  });
 });
 
 module.exports = router;
