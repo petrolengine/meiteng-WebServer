@@ -1,15 +1,35 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var jwt = require('express-jwt');
+"use strict";
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const jwt = require('express-jwt');
+const createError = require('http-errors');
 
-require('dotenv').config(process.cwd() + '.env');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const app = express();
 
-var app = express();
+// init env
+{
+    const dotenv = require('dotenv');
+    const fs = require('fs')
+    dotenv.config();
+    let filename = path.join(process.cwd(), '.env.production');
+    if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
+        filename = path.join(process.cwd(), '.env.development');
+    }
+    if (fs.existsSync(filename)) {
+        const envConfig = dotenv.parse(fs.readFileSync(filename));
+        for (var k in envConfig) {
+            process.env[k] = envConfig[k]
+        }
+    }
+}
+
+// init db
+require("./handlers/DatabaseHandler").instance.init();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -36,7 +56,7 @@ app.use((req, res, next) => next(createError(404)));
 // error handler
 app.use((err, req, res, next) => {
     // set locals, only providing error in development
-    ret = {};
+    const ret = {};
     ret.message = err.message;
     ret.stack = err.stack;
 
