@@ -6,7 +6,7 @@ const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
 const AccountHandler = require('../handlers/AccountHandler');
 
-/* POST do login. */
+/* Do login. */
 router.post('/login', (req, res, next) => {
   const authData = req.body;
   AccountHandler.instance.login(authData.uname, authData.psw).then((result) => {
@@ -24,7 +24,7 @@ router.post('/login', (req, res, next) => {
   });
 });
 
-/* POST do regist. */
+/* Do regist. */
 router.post('/regist', (req, res, next) => {
   const registData = req.body;
   AccountHandler.instance.regist(registData.name, registData.psw, registData.psw_repeat).then((result) => {

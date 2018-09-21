@@ -1,15 +1,25 @@
-var express = require('express');
-var router = express.Router();
-var createError = require('http-errors');
-var jwt = require('express-jwt');
+"use strict";
 
-/* GET users listing. */
-router.post('/', function (req, res, next) {
+const express = require('express');
+const router = express.Router();
+const createError = require('http-errors');
+const jwt = require('express-jwt');
+const RoomHandler = require('../handlers/RoomHandler');
+
+/* GET room info. */
+router.post('/GetRoomInfo', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  res.json([[1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13, 14]]);
+  console.log(req.user);
+  RoomHandler.instance.get_room_info(req.user, req.body.offset).then((result) => {
+    if (!result[0]) {
+      next(result[1]);
+      return;
+    }
+    res.json(result[1]);
+  });
 });
 
 module.exports = router;
