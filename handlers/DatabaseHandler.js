@@ -11,6 +11,9 @@ class DatabaseHandler {
         this.__pool.on("remove", this.__onDbRemove.bind(this));
     }
 
+    /**
+     * @returns {DatabaseHandler} DatabaseHandler
+     */
     static get instance() {
         if (!DatabaseHandler.__instance) {
             DatabaseHandler.__instance = new DatabaseHandler();
@@ -25,16 +28,11 @@ class DatabaseHandler {
         });
     }
 
-    async query(queryText) {
-        try {
-            const value = await this.__pool.query(queryText);
-            return [true, value];
-        } catch (e) {
-            console.log(e);
-            return [false];
-        }
-    }
-
+    /**
+     * @param {string} queryText sql
+     * @param {?any[]} values can be null
+     * @returns {Promise<[boolean, QueryResult]>} Promise<[boolean, QueryResult]>
+     */
     async query(queryText, values) {
         try {
             const value = await this.__pool.query(queryText, values);

@@ -24,22 +24,4 @@ router.post('/login', (req, res, next) => {
   });
 });
 
-/* Do regist. */
-router.post('/regist', (req, res, next) => {
-  const registData = req.body;
-  AccountHandler.instance.regist(registData.name, registData.psw, registData.psw_repeat).then((result) => {
-    if (!result[0]) {
-      next(result[1]);
-      return;
-    }
-    result[1].name = registData.name;
-    let token = jwt.sign(result[1], process.env.PRIVATE_KEY, {
-      algorithm: 'RS256',
-      expiresIn: '3 days'
-    });
-
-    res.send("Bearer " + token);
-  });
-});
-
 module.exports = router;

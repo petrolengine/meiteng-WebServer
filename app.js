@@ -42,12 +42,9 @@ app.use(jwt({
     credentialsRequired: false,
 }).unless({ path: ['/login', '/regist'] }));
 
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'POST');
-    res.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-});
+if (process.env.NODE_ENV === 'development') {
+    app.use(require('cors')());
+}
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -58,7 +55,9 @@ app.use((err, req, res, next) => {
     // set locals, only providing error in development
     const ret = {};
     ret.message = err.message;
-    ret.stack = err.stack;
+    if (process.env.NODE_ENV === 'development') {
+        ret.stack = err.stack;
+    }
 
     if (err.name === 'UnauthorizedError') {
         res.status(401);

@@ -4,9 +4,10 @@ const DatabaseHandler = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class AccountHandler {
-    constructor() {
-    }
 
+    /**
+     * @returns {AccountHandler} AccountHandler
+     */
     static get instance() {
         if (!AccountHandler.__instance) {
             AccountHandler.__instance = new AccountHandler();
@@ -14,11 +15,17 @@ class AccountHandler {
         return AccountHandler.__instance;
     }
 
+    /**
+     * 
+     * @param {string} name account name
+     * @param {string} psw password
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
     async login(name, psw) {
         if (!name || !psw) {
             return [false, createError(400)];
         }
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_auth($1,$2)", [name, psw]);
+        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_login($1,$2)", [name, psw]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -28,21 +35,7 @@ class AccountHandler {
         if (!result[1].rows[0].passed) {
             return [false, createError(403, "Password error.")];
         }
-        return [true, { id: result[1].rows[0].userid }];
-    }
-
-    async regist(name, psw, psw_repeat) {
-        if (!name || !psw || !psw_repeat || psw !== psw_repeat) {
-            return [false, createError(400)];
-        }
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_regist($1,$2)", [name, psw]);
-        if (!result[0] || result[1].rowCount === 0) {
-            return [false, createError(500)];
-        }
-        if (result[1].rows[0].userid === 0) {
-            return [false, createError(403, "User exists.")];
-        }
-        return [true, { id: result[1].rows[0].userid }];
+        return [true, { id: result[1].rows[0].id, flag: result[1].rows[0].flag }];
     }
 }
 
