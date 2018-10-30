@@ -41,6 +41,15 @@ router.post('/GetStaffInfo', (req, res, next) => {
   StaffHandler.instance.GetStaffInfo(req.user, req.body.id).then((result) => __do_result(res, result, next));
 });
 
+/* SET staff info. */
+router.post('/SetStaffInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  StaffHandler.instance.SetStaffInfo(req.user, req.body).then((result) => __do_result(res, result, next));
+});
+
 /* ADD staff */
 router.post('/AddStaff', (req, res, next) => {
   if (!req.user) {
@@ -48,6 +57,15 @@ router.post('/AddStaff', (req, res, next) => {
     return;
   }
   StaffHandler.instance.AddStaff(req.user, req.body).then((result) => __do_result(res, result, next));
+});
+
+/* DELETE staff */
+router.post('/DeleteStaff', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  StaffHandler.instance.DeleteStaff(req.user, req.body.id).then((result) => __do_result(res, result, next));
 });
 
 module.exports = router;
