@@ -1,6 +1,6 @@
 "use strict";
 
-const DatabaseHandler = require('./DatabaseHandler');
+const db = require('./DatabaseHandler').instance;
 const createError = require('http-errors');
 
 class StaffHandler {
@@ -16,19 +16,16 @@ class StaffHandler {
     }
 
     /**
-     * Get staff list
+     * Get staff list, UserData.flag >= get UserData.flag
      * @param {*} userData user data
      * @param {number} offset database offset
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async GetStaffList(userData, offset) {
-        if (userData.flag !== 2) {
-            return [false, createError(403)];
-        }
+    async get_staff_list(userData, offset) {
         if (offset === undefined) {
             offset = 0;
         }
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_get_staff_list($1,$2)", [50, offset]);
+        const result = await db.query("SELECT * FROM mt_get_staff_list($1,$2,$3)", [50, offset, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -36,19 +33,16 @@ class StaffHandler {
     }
 
     /**
-     * Get staff info
+     * Get staff info, UserData.flag >= get UserData.flag
      * @param {*} userData user data
      * @param {number} id staff id
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async GetStaffInfo(userData, id) {
-        if (userData.flag !== 2 && userData.id !== id) {
-            return [false, createError(403)];
-        }
+    async get_staff_info(userData, id) {
         if (id === undefined) {
             id = userData.id;
         }
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_get_staff_info($1)", [id]);
+        const result = await db.query("SELECT * FROM mt_get_staff_info($1,$2)", [id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -60,25 +54,21 @@ class StaffHandler {
     }
 
     /**
-     * Set staff info
+     * Set staff info, UserData.flag > set UserData.flag
      * @param {*} userData user data
      * @param {*} info new staff info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async SetStaffInfo(userData, info) {
+    async set_staff_info(userData, info) {
         const id = info.id; if (id === undefined) { return [false, createError(400)]; }
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
         const id_card = info.id_card; if (id_card === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
         const password = info.password; if (password === undefined) { return [false, createError(400)]; }
+        const flag = (id === userData.id) ? 9 : userData.flag;
 
-        if (userData.flag !== 2 && userData.id !== id) {
-            return [false, createError(403)];
-        }
-
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_set_staff_info($1,$2,$3,$4,$5,$6)",
-            [id, name, phone, id_card, sex, password]);
+        const result = await db.query("SELECT * FROM mt_set_staff_info($1,$2,$3,$4,$5,$6,$7)", [id, name, phone, id_card, sex, password, flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -94,8 +84,8 @@ class StaffHandler {
      * @param {*} info new staff info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async AddStaff(userData, info) {
-        if (userData.flag !== 2) {
+    async add_staff(userData, info) {
+        if (userData.flag < 2) {
             return [false, createError(403)];
         }
 
@@ -105,8 +95,7 @@ class StaffHandler {
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
         const password = info.password; if (password === undefined) { return [false, createError(400)]; }
 
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_add_staff($1,$2,$3,$4,$5,1)",
-            [name, phone, id_card, sex, password, flag]);
+        const result = await db.query("SELECT * FROM mt_add_staff($1,$2,$3,$4,$5,1)", [name, phone, id_card, sex, password]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -117,21 +106,21 @@ class StaffHandler {
     }
 
     /**
-     * Delete staff
+     * Delete staff, UserData.flag > delete UserData.flag
      * @param {*} userData user data
-     * @param {number} in staff id to delete
+     * @param {number} id staff id to delete
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async DeleteStaff(userData, id) {
-        if (userData.flag !== 2 || userData.id === id) {
-            return [false, createError(403)];
-        }
-
+    async delete_staff(userData, id) {
         if (id === undefined) {
             return [false, createError(400)];
         }
 
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_del_staff($1)", [id]);
+        if (userData.id === id) {
+            return [false, createError(403)];
+        }
+
+        const result = await db.query("SELECT * FROM mt_del_staff($1,$2)", [id, userData.flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }

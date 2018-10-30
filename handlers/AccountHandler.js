@@ -1,6 +1,6 @@
 "use strict";
 
-const DatabaseHandler = require('./DatabaseHandler');
+const db = require('./DatabaseHandler').instance;
 const createError = require('http-errors');
 
 class AccountHandler {
@@ -25,7 +25,7 @@ class AccountHandler {
         if (!name || !psw) {
             return [false, createError(400)];
         }
-        const result = await DatabaseHandler.instance.query("SELECT * FROM mt_login($1,$2)", [name, psw]);
+        const result = await db.query("SELECT * FROM mt_login($1,$2)", [name, psw]);
         if (!result[0]) {
             return [false, createError(500)];
         }

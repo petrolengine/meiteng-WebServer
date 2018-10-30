@@ -4,12 +4,12 @@ const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
-const AccountHandler = require('../handlers/AccountHandler');
+const accountHandler = require('../handlers/AccountHandler').instance;
 
 /* Do login. */
 router.post('/login', (req, res, next) => {
   const authData = req.body;
-  AccountHandler.instance.login(authData.uname, authData.psw).then((result) => {
+  accountHandler.login(authData.uname, authData.psw).then((result) => {
     if (!result[0]) {
       next(result[1]);
       return;

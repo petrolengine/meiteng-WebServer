@@ -3,10 +3,11 @@
 const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
-const RoomHandler = require('../handlers/RoomHandler');
-const StaffHandler = require('../handlers/StaffHandler');
+const roomHandler = require('../handlers/RoomHandler').instance;
+const staffHandler = require('../handlers/StaffHandler').instance;
+const landlordHandler = require('../handlers/LandlordHandler').instance;
 
-function __do_result(res, result, next) {
+function __c(res, result, next) {
   if (!result[0]) {
     next(result[1]);
   } else {
@@ -20,7 +21,7 @@ router.post('/GetRoomInfo', (req, res, next) => {
     next(createError(401));
     return;
   }
-  RoomHandler.instance.get_room_info(req.user, req.body.offset).then((result) => __do_result(res, result, next));
+  roomHandler.get_room_info(req.user, req.body.offset).then((result) => __c(res, result, next));
 });
 
 /* GET staff list. */
@@ -29,7 +30,7 @@ router.post('/GetStaffList', (req, res, next) => {
     next(createError(401));
     return;
   }
-  StaffHandler.instance.GetStaffList(req.user, req.body.offset).then((result) => __do_result(res, result, next));
+  staffHandler.get_staff_list(req.user, req.body.offset).then((result) => __c(res, result, next));
 });
 
 /* GET staff info. */
@@ -38,7 +39,7 @@ router.post('/GetStaffInfo', (req, res, next) => {
     next(createError(401));
     return;
   }
-  StaffHandler.instance.GetStaffInfo(req.user, req.body.id).then((result) => __do_result(res, result, next));
+  staffHandler.get_staff_info(req.user, req.body.id).then((result) => __c(res, result, next));
 });
 
 /* SET staff info. */
@@ -47,7 +48,7 @@ router.post('/SetStaffInfo', (req, res, next) => {
     next(createError(401));
     return;
   }
-  StaffHandler.instance.SetStaffInfo(req.user, req.body).then((result) => __do_result(res, result, next));
+  staffHandler.set_staff_info(req.user, req.body).then((result) => __c(res, result, next));
 });
 
 /* ADD staff */
@@ -56,7 +57,7 @@ router.post('/AddStaff', (req, res, next) => {
     next(createError(401));
     return;
   }
-  StaffHandler.instance.AddStaff(req.user, req.body).then((result) => __do_result(res, result, next));
+  staffHandler.add_staff(req.user, req.body).then((result) => __c(res, result, next));
 });
 
 /* DELETE staff */
@@ -65,7 +66,25 @@ router.post('/DeleteStaff', (req, res, next) => {
     next(createError(401));
     return;
   }
-  StaffHandler.instance.DeleteStaff(req.user, req.body.id).then((result) => __do_result(res, result, next));
+  staffHandler.delete_staff(req.user, req.body.id).then((result) => __c(res, result, next));
+});
+
+/* GET landlord list. */
+router.post('/GetLandlordList', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.get_landlord_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+});
+
+/* GET landlord info. */
+router.post('/GetLandlordInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.get_landlord_info(req.user, req.body.id).then((result) => __c(res, result, next));
 });
 
 module.exports = router;
