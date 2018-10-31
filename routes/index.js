@@ -20,7 +20,12 @@ router.post('/login', (req, res, next) => {
       expiresIn: '3 days'
     });
 
-    res.send("Bearer " + token);
+    const ret = {
+      jwt: "Bearer " + token,
+      id: result[1].id,
+      flag: result[1].flag
+    }
+    res.json(ret);
   });
 });
 
