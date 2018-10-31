@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const roomHandler = require('../handlers/RoomHandler').instance;
 const staffHandler = require('../handlers/StaffHandler').instance;
 const landlordHandler = require('../handlers/LandlordHandler').instance;
+const tenantHandler = require('../handlers/TenantHandler').instance;
 
 function __c(res, result, next) {
   if (!result[0]) {
@@ -103,6 +104,42 @@ router.post('/AddLandlord', (req, res, next) => {
     return;
   }
   landlordHandler.add_landlord(req.user, req.body).then((result) => __c(res, result, next));
+});
+
+/* GET tenant list. */
+router.post('/GetTenantList', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.get_tenant_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+});
+
+/* GET tenant info. */
+router.post('/GetTenantInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.get_tenant_info(req.user, req.body.id).then((result) => __c(res, result, next));
+});
+
+/* SET tenant info. */
+router.post('/SetTenantInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.set_tenant_info(req.user, req.body).then((result) => __c(res, result, next));
+});
+
+/* ADD tenant. */
+router.post('/AddTenant', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.add_tenant(req.user, req.body).then((result) => __c(res, result, next));
 });
 
 module.exports = router;
