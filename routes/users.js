@@ -87,4 +87,22 @@ router.post('/GetLandlordInfo', (req, res, next) => {
   landlordHandler.get_landlord_info(req.user, req.body.id).then((result) => __c(res, result, next));
 });
 
+/* SET landlord info. */
+router.post('/SetLandlordInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.set_landlord_info(req.user, req.body).then((result) => __c(res, result, next));
+});
+
+/* ADD landlord. */
+router.post('/AddLandlord', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.add_landlord(req.user, req.body).then((result) => __c(res, result, next));
+});
+
 module.exports = router;
