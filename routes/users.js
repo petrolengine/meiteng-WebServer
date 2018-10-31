@@ -7,6 +7,7 @@ const roomHandler = require('../handlers/RoomHandler').instance;
 const staffHandler = require('../handlers/StaffHandler').instance;
 const landlordHandler = require('../handlers/LandlordHandler').instance;
 const tenantHandler = require('../handlers/TenantHandler').instance;
+const areaHandler = require('../handlers/AreaHandler').instance;
 
 function __c(res, result, next) {
   if (!result[0]) {
@@ -140,6 +141,24 @@ router.post('/AddTenant', (req, res, next) => {
     return;
   }
   tenantHandler.add_tenant(req.user, req.body).then((result) => __c(res, result, next));
+});
+
+/* GET area list. */
+router.post('/GetAreaList', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.get_area_list().then((result) => __c(res, result, next));
+});
+
+/* ADD area. */
+router.post('/AddArea', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.add_area(req.body).then((result) => __c(res, result, next));
 });
 
 module.exports = router;
