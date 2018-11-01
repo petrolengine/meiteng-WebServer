@@ -20,7 +20,7 @@ class AreaHandler {
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_area_list() {
-        const result = await db.query("mt_get_area_list()");
+        const result = await db.query("mt_get_area_list");
         if (!result[0]) {
             return [false, createError(500)];
         }
