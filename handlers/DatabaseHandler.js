@@ -34,9 +34,9 @@ class DatabaseHandler {
      * @returns {Promise<[boolean, QueryResult]>} Promise<[boolean, QueryResult]>
      */
     async query(queryText, values) {
-        let sql = "SELECT * FROM " + queryText + "(";
+        let sql = `SELECT * FROM ${queryText} (`;
         for (let idx = 1; idx <= values.length; idx++) {
-            sql += (idx == 1) ? "$" + idx : ",$" + idx;
+            sql += (idx === 1) ? `$${idx}` : `,$${idx}`;
         }
         sql += ")";
         try {

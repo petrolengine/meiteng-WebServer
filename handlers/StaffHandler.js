@@ -25,7 +25,7 @@ class StaffHandler {
         if (offset === undefined) {
             offset = 0;
         }
-        const result = await db.query("mt_get_staff_list($1,$2,$3)", [50, offset, userData.flag]);
+        const result = await db.query("mt_get_staff_list", [50, offset, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -68,7 +68,7 @@ class StaffHandler {
         const password = info.password; if (password === undefined) { return [false, createError(400)]; }
         const flag = (id === userData.id) ? 9 : userData.flag;
 
-        const result = await db.query("mt_set_staff_info($1,$2,$3,$4,$5,$6,$7)", [id, name, phone, id_card, sex, password, flag]);
+        const result = await db.query("mt_set_staff_info", [id, name, phone, id_card, sex, password, flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
