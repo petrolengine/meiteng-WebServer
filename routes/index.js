@@ -4,12 +4,12 @@ const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
-const AccountHandler = require('../handlers/AccountHandler');
+const accountHandler = require('../handlers/AccountHandler').instance;
 
 /* Do login. */
 router.post('/login', (req, res, next) => {
   const authData = req.body;
-  AccountHandler.instance.login(authData.uname, authData.psw).then((result) => {
+  accountHandler.login(authData.uname, authData.psw).then((result) => {
     if (!result[0]) {
       next(result[1]);
       return;
@@ -20,25 +20,12 @@ router.post('/login', (req, res, next) => {
       expiresIn: '3 days'
     });
 
-    res.send("Bearer " + token);
-  });
-});
-
-/* Do regist. */
-router.post('/regist', (req, res, next) => {
-  const registData = req.body;
-  AccountHandler.instance.regist(registData.name, registData.psw, registData.psw_repeat).then((result) => {
-    if (!result[0]) {
-      next(result[1]);
-      return;
+    const ret = {
+      jwt: "Bearer " + token,
+      id: result[1].id,
+      flag: result[1].flag
     }
-    result[1].name = registData.name;
-    let token = jwt.sign(result[1], process.env.PRIVATE_KEY, {
-      algorithm: 'RS256',
-      expiresIn: '3 days'
-    });
-
-    res.send("Bearer " + token);
+    res.json(ret);
   });
 });
 

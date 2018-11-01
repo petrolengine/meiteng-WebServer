@@ -1,8 +1,13 @@
 "use strict";
 
-const DatabaseHandler = require('./DatabaseHandler');
+const db = require('./DatabaseHandler').instance;
+const createError = require('http-errors');
 
 class RoomHandler {
+
+    /**
+     * @returns {RoomHandler} RoomHandler
+     */
     static get instance() {
         if (!RoomHandler.__instance) {
             RoomHandler.__instance = new RoomHandler();
@@ -10,16 +15,31 @@ class RoomHandler {
         return RoomHandler.__instance;
     }
 
-    async get_room_info(userData, offset) {
+    /**
+     * Get room list
+     * @param {*} userData user data
+     * @param {number} offset database offset
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_room_list(userData, offset) {
         if (offset === undefined) {
             offset = 0;
         }
-        // todo add admin account
-        const result = await DatabaseHandler.instance.query("SELECT * FROM room_info LIMIT 50 OFFSET $1", [offset]);
+        const result = await db.query("mt_get_room_list", [50, offset, userData.id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
         return [true, result[1].rows];
+    }
+
+    /**
+     * Add room
+     * @param {*} userDate user data
+     * @param {*} info room info
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async add_room(userDate, info) {
+
     }
 }
 
