@@ -25,7 +25,7 @@ class StaffHandler {
         if (offset === undefined) {
             offset = 0;
         }
-        const result = await db.query("SELECT * FROM mt_get_staff_list($1,$2,$3)", [50, offset, userData.flag]);
+        const result = await db.query("mt_get_staff_list($1,$2,$3)", [50, offset, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -42,7 +42,7 @@ class StaffHandler {
         if (id === undefined) {
             id = userData.id;
         }
-        const result = await db.query("SELECT * FROM mt_get_staff_info($1,$2)", [id, userData.flag]);
+        const result = await db.query("mt_get_staff_info($1,$2)", [id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -68,7 +68,7 @@ class StaffHandler {
         const password = info.password; if (password === undefined) { return [false, createError(400)]; }
         const flag = (id === userData.id) ? 9 : userData.flag;
 
-        const result = await db.query("SELECT * FROM mt_set_staff_info($1,$2,$3,$4,$5,$6,$7)", [id, name, phone, id_card, sex, password, flag]);
+        const result = await db.query("mt_set_staff_info($1,$2,$3,$4,$5,$6,$7)", [id, name, phone, id_card, sex, password, flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -95,7 +95,7 @@ class StaffHandler {
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
         const password = info.password; if (password === undefined) { return [false, createError(400)]; }
 
-        const result = await db.query("SELECT * FROM mt_add_staff($1,$2,$3,$4,$5,1)", [name, phone, id_card, sex, password]);
+        const result = await db.query("mt_add_staff", [name, phone, id_card, sex, password, 1]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -120,7 +120,7 @@ class StaffHandler {
             return [false, createError(403)];
         }
 
-        const result = await db.query("SELECT * FROM mt_del_staff($1,$2)", [id, userData.flag]);
+        const result = await db.query("mt_del_staff", [id, userData.flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }

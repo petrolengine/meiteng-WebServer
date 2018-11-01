@@ -34,8 +34,13 @@ class DatabaseHandler {
      * @returns {Promise<[boolean, QueryResult]>} Promise<[boolean, QueryResult]>
      */
     async query(queryText, values) {
+        let sql = "SELECT * FROM " + queryText + "(";
+        for (let idx = 1; idx <= values.length; idx++) {
+            sql += (idx == 1) ? "$" + idx : ",$" + idx;
+        }
+        sql += ")";
         try {
-            const value = await this.__pool.query(queryText, values);
+            const value = await this.__pool.query(sql, values);
             return [true, value];
         } catch (e) {
             console.log(e);

@@ -27,7 +27,7 @@ class TenantHandler {
         if (offset === undefined) {
             offset = 0;
         }
-        const result = await db.query("SELECT * FROM mt_get_tenant_list($1,$2,$3,$4)", [50, offset, userData.id, userData.flag]);
+        const result = await db.query("mt_get_tenant_list", [50, offset, userData.id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -46,7 +46,7 @@ class TenantHandler {
         if (id === undefined) {
             return [false, createError(400)];
         }
-        const result = await db.query("SELECT * FROM mt_get_tenant_info($1,$2,$3)", [id, userData.id, userData.flag]);
+        const result = await db.query("mt_get_tenant_info", [id, userData.id, userData.flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -66,8 +66,7 @@ class TenantHandler {
         const phone = info.phone || '';
         const id_card = info.id_card || '';
 
-        const result = await db.query("SELECT * FROM mt_set_tenant_info($1,$2,$3,$4,$5,$6,$7)",
-            [id, name, sex, phone, id_card, userData.id, userData.flag]);
+        const result = await db.query("mt_set_tenant_info", [id, name, sex, phone, id_card, userData.id, userData.flag]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
@@ -89,7 +88,7 @@ class TenantHandler {
         const phone = info.phone || '';
         const id_card = info.id_card || '';
 
-        const result = await db.query("SELECT * FROM mt_add_tenant($1,$2,$3,$4,$5)", [name, sex, phone, id_card, userData.id]);
+        const result = await db.query("mt_add_tenant", [name, sex, phone, id_card, userData.id]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }

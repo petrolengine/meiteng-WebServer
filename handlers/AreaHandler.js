@@ -20,7 +20,7 @@ class AreaHandler {
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_area_list() {
-        const result = await db.query("SELECT * FROM mt_get_area_list()");
+        const result = await db.query("mt_get_area_list()");
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -36,7 +36,7 @@ class AreaHandler {
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const address = info.address || '';
 
-        const result = await db.query("SELECT * FROM mt_add_area($1,$2)", [name, address]);
+        const result = await db.query("mt_add_area", [name, address]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }

@@ -17,13 +17,22 @@ function __c(res, result, next) {
   }
 }
 
-/* GET room info. */
-router.post('/GetRoomInfo', (req, res, next) => {
+/* GET room list. */
+router.post('/GetRoomList', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  roomHandler.get_room_info(req.user, req.body.offset).then((result) => __c(res, result, next));
+  roomHandler.get_room_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+});
+
+/* ADD room. */
+router.post('/AddRoom', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  roomHandler.add_room(req.user, req.body.offset).then((result) => __c(res, result, next));
 });
 
 /* GET staff list. */
