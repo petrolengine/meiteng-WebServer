@@ -16,7 +16,6 @@ class AccountHandler {
     }
 
     /**
-     * 
      * @param {string} name account name
      * @param {string} psw password
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>

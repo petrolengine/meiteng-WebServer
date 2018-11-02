@@ -3,9 +3,11 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
 const jwt = require('express-jwt');
 const createError = require('http-errors');
+const fs = require('fs');
+const { createLogger, format, transports } = require('winston');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -14,7 +16,6 @@ const app = express();
 // init env
 {
     const dotenv = require('dotenv');
-    const fs = require('fs')
     dotenv.config();
     let filename = path.join(process.cwd(), '.env.production');
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
@@ -28,10 +29,33 @@ const app = express();
     }
 }
 
+const myFormat = format.printf(info => {
+    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+});
+
+const logger = createLogger({
+    format: format.combine(
+        format.label({ label: 'right meow!' }),
+        format.timestamp(),
+        myFormat
+    ),
+    transports: [new transports.File({
+        filename: path.join(process.env.LOG_ROOT_DIR || __dirname, 'server.log'),
+        json: false
+    }),
+    new transports.Console()]
+});
+
+logger.info('logging from your IoC container-based logger');
+
 // init db
 require("./handlers/DatabaseHandler").instance.init();
 
-app.use(logger('dev'));
+app.use(morgan('common', {
+    stream: fs.createWriteStream(
+        path.join(process.env.LOG_ROOT_DIR || __dirname, 'access.log'), { flags: 'a' }
+    )
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
