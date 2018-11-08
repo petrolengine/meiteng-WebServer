@@ -1,6 +1,7 @@
 "use strict";
 
 const { Pool } = require('pg');
+const logger = require("./LoggerHandler");
 
 class DatabaseHandler {
     constructor() {
@@ -28,6 +29,7 @@ class DatabaseHandler {
             const res = await this.__pool.query("SELECT * FROM mt_get_init_data()");
             this.global_data = res.rows[0];
             this.initialized = true;
+            logger.info(JSON.stringify(this.global_data));
         } catch (e) {
             console.error(e);
             process.exit(-1);

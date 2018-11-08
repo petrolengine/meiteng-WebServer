@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const jwt = require('express-jwt');
 const createError = require('http-errors');
 const fs = require('fs');
-const { createLogger, format, transports } = require('winston');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -29,25 +28,8 @@ const app = express();
     }
 }
 
-const myFormat = format.printf(info => {
-    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
-});
-
-const logger = createLogger({
-    format: format.combine(
-        format.label({ label: 'right meow!' }),
-        format.timestamp(),
-        myFormat
-    ),
-    transports: [new transports.File({
-        filename: path.join(process.env.LOG_ROOT_DIR || __dirname, 'server.log'),
-        json: false
-    }),
-    new transports.Console()]
-});
-
-logger.info('logging from your IoC container-based logger');
-
+// init logger
+require("./handlers/LoggerHandler");
 // init db
 require("./handlers/DatabaseHandler").instance.init();
 
