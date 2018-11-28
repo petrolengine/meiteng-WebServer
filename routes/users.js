@@ -170,4 +170,13 @@ router.post('/AddArea', (req, res, next) => {
   areaHandler.add_area(req.body).then((result) => __c(res, result, next));
 });
 
+/* SET area. */
+router.post('/SetAreaInfo', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.set_area_info(req.body).then((result) => __c(res, result, next));
+});
+
 module.exports = router;

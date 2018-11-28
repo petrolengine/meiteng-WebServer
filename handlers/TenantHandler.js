@@ -60,7 +60,8 @@ class TenantHandler {
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async set_tenant_info(userData, info) {
-        const id = info.id; if (id === undefined) { return [false, createError(400)]; }
+        if (info.id === undefined) { return [false, createError(400)]; }
+        const id = parseInt(info.id, 10);
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
         const phone = info.phone || '';
@@ -70,7 +71,7 @@ class TenantHandler {
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
-        if (result[1].rows[0].id === null) {
+        if (result[1].rows[0].id !== id) {
             return [false, createError(409)];
         }
         return [true, result[1].rows[0]];
