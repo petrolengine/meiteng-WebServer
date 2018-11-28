@@ -1,14 +1,14 @@
 "use strict";
 
 const { Pool } = require('pg');
+const logger = require("./LoggerHandler");
 
 class DatabaseHandler {
     constructor() {
         this.__pool = new Pool();
         this.__pool.on("error", this.__onDbError.bind(this));
-        this.__pool.on("connect", this.__onDbConnect.bind(this));
-        this.__pool.on("acquire", this.__onDbAcquire.bind(this));
-        this.__pool.on("remove", this.__onDbRemove.bind(this));
+        this.initialized = false;
+        this.global_data = {};
     }
 
     /**
@@ -21,19 +21,31 @@ class DatabaseHandler {
         return DatabaseHandler.__instance;
     }
 
-    init() {
-        this.__pool.connect().catch((error) => {
-            console.error(error.stack);
+    /**
+     * Get init data from database
+     */
+    async init() {
+        try {
+            const res = await this.__pool.query("SELECT * FROM mt_get_init_data()");
+            this.global_data = res.rows[0];
+            this.initialized = true;
+            logger.info(JSON.stringify(this.global_data));
+        } catch (e) {
+            console.error(e);
             process.exit(-1);
-        });
+        }
     }
 
     /**
+     * Query with database, return false when init is not finished.
      * @param {string} queryText sql
      * @param {?any[]} values can be null
      * @returns {Promise<[boolean, QueryResult]>} Promise<[boolean, QueryResult]>
      */
     async query(queryText, values) {
+        if (!this.initialized) {
+            return [false];
+        }
         let sql = `SELECT * FROM ${queryText}(`;
         if (values !== undefined) {
             for (let idx = 1; idx <= values.length; idx++) {
@@ -41,31 +53,19 @@ class DatabaseHandler {
             }
         }
         sql += ")";
+
         try {
-            const value = await this.__pool.query(sql, values);
-            return [true, value];
+            const res = await this.__pool.query(sql, values);
+            return [true, res];
         } catch (e) {
-            console.log(e);
+            console.error(e);
             return [false];
         }
     }
 
     __onDbError(err, client) {
-        client.release();
-        console.error(err.message);
-        console.error(err.stack);
-    }
-
-    __onDbConnect(client) {
-        // console.log("on connect");
-    }
-
-    __onDbAcquire(client) {
-        // console.log("on acquire");
-    }
-
-    __onDbRemove(client) {
-        // console.log("on remove");
+        console.log("on db error");
+        console.error(err);
     }
 }
 

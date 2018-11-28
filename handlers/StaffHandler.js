@@ -60,19 +60,18 @@ class StaffHandler {
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async set_staff_info(userData, info) {
-        const id = info.id; if (id === undefined) { return [false, createError(400)]; }
+        if (info.id === undefined) { return [false, createError(400)]; }
+        const id = parseInt(info.id, 10);
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
         const id_card = info.id_card; if (id_card === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
-        const password = info.password; if (password === undefined) { return [false, createError(400)]; }
-        const flag = (id === userData.id) ? 9 : userData.flag;
 
-        const result = await db.query("mt_set_staff_info", [id, name, phone, id_card, sex, password, flag]);
+        const result = await db.query("mt_set_staff_info", [id, name, phone, id_card, sex]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
-        if (result[1].rows[0].ret !== id) {
+        if (result[1].rows[0].id !== id) {
             return [false, createError(409)];
         }
         return [true, result[1].rows[0]];

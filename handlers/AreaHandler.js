@@ -45,6 +45,27 @@ class AreaHandler {
         }
         return [true, result[1].rows[0]];
     }
+
+    /**
+     * Set area info
+     * @param {*} info area info
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async set_area_info(info) {
+        if (info.id === undefined) { return [false, createError(400)]; }
+        const id = parseInt(info.id, 10);
+        const name = info.name; if (name === undefined) { return [false, createError(400)]; }
+        const address = info.address || '';
+
+        const result = await db.query("mt_set_area_info", [id, name, address]);
+        if (!result[0] || result[1].rowCount === 0) {
+            return [false, createError(500)];
+        }
+        if (result[1].rows[0].id !== id) {
+            return [false, createError(409)];
+        }
+        return [true, result[1].rows[0]];
+    }
 }
 
 module.exports = AreaHandler;

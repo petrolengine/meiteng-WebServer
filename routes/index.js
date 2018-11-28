@@ -2,9 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
 const accountHandler = require('../handlers/AccountHandler').instance;
+const db = require('../handlers/DatabaseHandler').instance;
 
 /* Do login. */
 router.post('/login', (req, res, next) => {
@@ -23,7 +23,8 @@ router.post('/login', (req, res, next) => {
     const ret = {
       jwt: "Bearer " + token,
       id: result[1].id,
-      flag: result[1].flag
+      flag: result[1].flag,
+      totals: db.global_data
     }
     res.json(ret);
   });
