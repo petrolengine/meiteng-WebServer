@@ -26,8 +26,9 @@ class DatabaseHandler {
      */
     async init() {
         try {
-            const res = await this.__pool.query("SELECT * FROM mt_get_init_data()");
-            this.global_data = res.rows[0];
+            //const res = await this.__pool.query("SELECT * FROM mt_get_init_data()");
+            //this.global_data = res.rows[0];
+            this.global_data = [];
             this.initialized = true;
             logger.info(JSON.stringify(this.global_data));
         } catch (e) {

@@ -41,7 +41,7 @@ router.post('/GetStaffList', (req, res, next) => {
     next(createError(401));
     return;
   }
-  staffHandler.get_staff_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+  staffHandler.get_staff_list(req.user, req.body.page, req.body.prePage).then((result) => __c(res, result, next));
 });
 
 /* GET staff info. */
