@@ -89,21 +89,20 @@ class StaffHandler {
 
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
-        const age = info.sex; if (age === undefined) { return [false, createError(400)]; }
+        const age = info.age; if (age === undefined) { return [false, createError(400)]; }
         const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
         const native_place = info.native_place; if (native_place === undefined) { return [false, createError(400)]; }
         const id_card = info.id_card; if (id_card === undefined) { return [false, createError(400)]; }
-        const remarks = info.remarks; if (remarks === undefined) { return [false, createError(400)]; }
+        const remarks = info.remarks || '';
 
-        // const result = await db.query("mt_add_staff", [name, phone, id_card, sex, password, 1]);
-        // if (!result[0] || result[1].rowCount === 0) {
-        //     return [false, createError(500)];
-        // }
-        // if (result[1].rows[0].id === null) {
-        //     return [false, createError(409)];
-        // }
-        // return [true, result[1].rows[0]];
-        return [true, 2];
+        const result = await db.query("mt_add_staff", [name, sex, age, phone, native_place, id_card, remarks]);
+        if (!result[0] || result[1].rowCount === 0) {
+            return [false, createError(500)];
+        }
+        if (result[1].rows[0].id === null) {
+            return [false, createError(409)];
+        }
+        return [true, result[1].rows[0]];
     }
 
     /**
