@@ -86,7 +86,7 @@ router.post('/GetLandlordList', (req, res, next) => {
     next(createError(401));
     return;
   }
-  landlordHandler.get_landlord_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+  landlordHandler.get_landlord_list(req.user, req.body.page, req.body.prePage).then((result) => __c(res, result, next));
 });
 
 /* GET landlord info. */
@@ -122,7 +122,7 @@ router.post('/GetTenantList', (req, res, next) => {
     next(createError(401));
     return;
   }
-  tenantHandler.get_tenant_list(req.user, req.body.offset).then((result) => __c(res, result, next));
+  tenantHandler.get_tenant_list(req.user, req.body.page, req.body.prePage).then((result) => __c(res, result, next));
 });
 
 /* GET tenant info. */
