@@ -85,10 +85,13 @@ class LandlordHandler {
     async add_landlord(userData, info) {
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
-        const phone = info.phone || '';
+        const age = info.age || 0;
+        const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
+        const native_place = info.native_place || '';
         const id_card = info.id_card || '';
+        const remarks = info.remarks || '';
 
-        const result = await db.query("mt_add_landlord", [name, sex, phone, id_card, userData.id]);
+        const result = await db.query("mt_add_landlord", [name, sex, age, phone, native_place, id_card, userData.id, remarks]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
