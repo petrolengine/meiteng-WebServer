@@ -19,8 +19,9 @@ class AreaHandler {
      * Get area list
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_area_list() {
-        const result = await db.query("mt_get_area_list");
+    async get_area_list(page, prePage) {
+        const offset = page * prePage;
+        const result = await db.query("mt_get_area_list", [prePage, offset]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -35,8 +36,10 @@ class AreaHandler {
     async add_area(info) {
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
         const address = info.address || '';
+        const tags = info.tags || [];
+        const traficTags = info.traficTags || [];
 
-        const result = await db.query("mt_add_area", [name, address]);
+        const result = await db.query("mt_add_area", [name, address, tags, traficTags]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }

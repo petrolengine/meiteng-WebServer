@@ -158,7 +158,7 @@ router.post('/GetAreaList', (req, res, next) => {
     next(createError(401));
     return;
   }
-  areaHandler.get_area_list().then((result) => __c(res, result, next));
+  areaHandler.get_area_list(req.body.page, req.body.prePage).then((result) => __c(res, result, next));
 });
 
 /* ADD area. */
