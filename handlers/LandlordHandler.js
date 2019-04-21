@@ -26,7 +26,7 @@ class LandlordHandler {
      */
     async get_landlord_list(userData, page, prePage) {
         const offset = page * prePage;
-        const result = await db.query("mt_get_landlord_list", [prePage, offset, userData.id]);
+        const result = await db.query("mt_get_landlord_list", [prePage, offset, userData.id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }
