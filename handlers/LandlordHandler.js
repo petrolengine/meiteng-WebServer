@@ -24,9 +24,17 @@ class LandlordHandler {
      * @param {number} prePage num of staffs pre page
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_landlord_list(userData, page, prePage) {
+    async get_landlord_list(userData, info) {
+        const page = info.page || 0;
+        const prePage = info.prePage || 5;
+        const key = info.key || "";
         const offset = page * prePage;
-        const result = await db.query("mt_get_landlord_list", [prePage, offset, userData.id, userData.flag]);
+
+        let result;
+        if (key.length === 0)
+            result = await db.query("mt_get_landlord_list", [prePage, offset, userData.id, userData.flag]);
+        else
+            result = await db.query("mt_get_landlord_list_by_key", ['%' + key + '%', prePage, offset, userData.id, userData.flag]);
         if (!result[0]) {
             return [false, createError(500)];
         }

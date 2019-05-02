@@ -22,9 +22,17 @@ class StaffHandler {
      * @param {number} prePage num of staffs pre page
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_staff_list(userData, page, prePage) {
+    async get_staff_list(userData, info) {
+        const page = info.page || 0;
+        const prePage = info.prePage || 5;
+        const key = info.key || "";
         const offset = page * prePage;
-        const result = await db.query("mt_get_staff_list", [prePage, offset]);
+
+        let result;
+        if (key.length === 0)
+            result = await db.query("mt_get_staff_list", [prePage, offset]);
+        else
+            result = await db.query("mt_get_staff_list_by_key", ['%' + key + '%', prePage, offset]);
         if (!result[0]) {
             return [false, createError(500)];
         }

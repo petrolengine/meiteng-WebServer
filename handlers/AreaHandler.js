@@ -19,9 +19,18 @@ class AreaHandler {
      * Get area list
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_area_list(page, prePage) {
+    async get_area_list(info) {
+        const page = info.page || 0;
+        const prePage = info.prePage || 5;
+        const key = info.key || "";
         const offset = page * prePage;
-        const result = await db.query("mt_get_area_list", [prePage, offset]);
+        let result;
+
+        if (key.length === 0) {
+            result = await db.query("mt_get_area_list", [prePage, offset]);
+        } else {
+            result = await db.query("mt_get_area_list_by_key", ['%' + key + '%', prePage, offset]);
+        }
         if (!result[0]) {
             return [false, createError(500)];
         }
