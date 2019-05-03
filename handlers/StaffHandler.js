@@ -18,14 +18,21 @@ class StaffHandler {
     /**
      * Get staff list, UserData.flag >= get UserData.flag
      * @param {*} userData user data
-     * @param {number} offset database offset
+     * @param {number} page current page, start with 0
+     * @param {number} prePage num of staffs pre page
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_staff_list(userData, offset) {
-        if (offset === undefined) {
-            offset = 0;
-        }
-        const result = await db.query("mt_get_staff_list", [50, offset, userData.flag]);
+    async get_staff_list(userData, info) {
+        const page = info.page || 0;
+        const prePage = info.prePage || 5;
+        const key = info.key || "";
+        const offset = page * prePage;
+
+        let result;
+        if (key.length === 0)
+            result = await db.query("mt_get_staff_list", [prePage, offset]);
+        else
+            result = await db.query("mt_get_staff_list_by_key", ['%' + key + '%', prePage, offset]);
         if (!result[0]) {
             return [false, createError(500)];
         }
@@ -89,12 +96,14 @@ class StaffHandler {
         }
 
         const name = info.name; if (name === undefined) { return [false, createError(400)]; }
-        const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
-        const id_card = info.id_card; if (id_card === undefined) { return [false, createError(400)]; }
         const sex = info.sex; if (sex === undefined) { return [false, createError(400)]; }
-        const password = info.password; if (password === undefined) { return [false, createError(400)]; }
+        const age = info.age; if (age === undefined) { return [false, createError(400)]; }
+        const phone = info.phone; if (phone === undefined) { return [false, createError(400)]; }
+        const native_place = info.native_place; if (native_place === undefined) { return [false, createError(400)]; }
+        const id_card = info.id_card; if (id_card === undefined) { return [false, createError(400)]; }
+        const remarks = info.remarks || '';
 
-        const result = await db.query("mt_add_staff", [name, phone, id_card, sex, password, 1]);
+        const result = await db.query("mt_add_staff", [name, sex, age, phone, native_place, id_card, remarks]);
         if (!result[0] || result[1].rowCount === 0) {
             return [false, createError(500)];
         }
