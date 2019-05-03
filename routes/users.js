@@ -48,6 +48,15 @@ router.post('/GetStaffList', (req, res, next) => {
   staffHandler.get_staff_list(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
+/* GET staff list2. */
+router.post('/GetStaffList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  staffHandler.get_staff_list2(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
 /* GET staff info. */
 router.post('/GetStaffInfo', (req, res, next) => {
   if (!req.user) {
@@ -93,6 +102,15 @@ router.post('/GetLandlordList', (req, res, next) => {
   landlordHandler.get_landlord_list(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
+/* GET landlord list2. */
+router.post('/GetLandlordList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.get_landlord_list2(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
 /* GET landlord info. */
 router.post('/GetLandlordInfo', (req, res, next) => {
   if (!req.user) {
@@ -127,6 +145,15 @@ router.post('/GetTenantList', (req, res, next) => {
     return;
   }
   tenantHandler.get_tenant_list(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* GET tenant list2. */
+router.post('/GetTenantList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.get_tenant_list2(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET tenant info. */
@@ -171,7 +198,7 @@ router.post('/GetAreaList2', (req, res, next) => {
     next(createError(401));
     return;
   }
-  areaHandler.get_area_list2(req.body).then((result) => __c(req, res, result, next));
+  areaHandler.get_area_list2(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* ADD area. */

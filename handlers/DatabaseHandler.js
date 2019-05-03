@@ -92,15 +92,7 @@ class DatabaseHandler {
             const totals = await this.getTotals(id, flags);
             return totals[type];
         }
-        let result;
-        switch (type) {
-            case "area":
-                result = await this.query(`mt_get_area_count_by_key`, ['%' + key + '%']);
-                break;
-            default:
-                result = await this.query(`mt_get_${type}_count_by_key`, ['%' + key + '%', id, flags]);
-                break;
-        }
+        const result = await this.query(`mt_get_${type}_count_by_key`, ['%' + key + '%', id, flags]);
         if (!result[0] || result[1].rowCount !== 1) {
             return 0;
         }

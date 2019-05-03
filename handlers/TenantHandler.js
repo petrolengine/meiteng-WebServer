@@ -20,8 +20,7 @@ class TenantHandler {
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
      * @param {*} userData user data
-     * @param {number} page current page, start with 0
-     * @param {number} prePage num of staffs pre page
+     * @param {*} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_tenant_list(userData, info) {
@@ -39,6 +38,25 @@ class TenantHandler {
             return [false, createError(500)];
         }
         return [true, result[1].rows];
+    }
+
+    /**
+     * Get tenant list2
+     * UserData.flag > get UserData.flag or
+     * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
+     * @param {*} userData user data
+     * @param {*} info request
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_tenant_list2(userData, info) {
+        const key = info.key || "";
+        const result = await this.get_tenant_list(userData, info);
+        if (!result[0]) {
+            return result;
+        }
+        const ret = { data: result[1], total: 0 };
+        ret.total = await db.getTotal("tenant", userData.id, userData.flag, key);
+        return [true, ret];
     }
 
     /**

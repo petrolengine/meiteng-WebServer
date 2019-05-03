@@ -18,8 +18,7 @@ class StaffHandler {
     /**
      * Get staff list, UserData.flag >= get UserData.flag
      * @param {*} userData user data
-     * @param {number} page current page, start with 0
-     * @param {number} prePage num of staffs pre page
+     * @param {*} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_staff_list(userData, info) {
@@ -37,6 +36,23 @@ class StaffHandler {
             return [false, createError(500)];
         }
         return [true, result[1].rows];
+    }
+
+    /**
+     * Get staff list2, UserData.flag >= get UserData.flag
+     * @param {*} userData user data
+     * @param {*} info request
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_staff_list2(userData, info) {
+        const key = info.key || "";
+        const result = await this.get_staff_list(userData, info);
+        if (!result[0]) {
+            return result;
+        }
+        const ret = { data: result[1], total: 0 };
+        ret.total = await db.getTotal("staff", userData.id, userData.flag, key);
+        return [true, ret];
     }
 
     /**

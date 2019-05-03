@@ -38,18 +38,18 @@ class AreaHandler {
     }
 
     /**
-     * Get area list
+     * Get area list2
      * @param {*} info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async get_area_list2(info) {
+    async get_area_list2(userData, info) {
         const key = info.key || "";
         const result = await this.get_area_list(info);
         if (!result[0]) {
             return result;
         }
         const ret = { data: result[1], total: 0 };
-        ret.total = await db.getTotal("area", 0, 0, key);
+        ret.total = await db.getTotal("area", userData.id, userData.flag, key);
         return [true, ret];
     }
 
