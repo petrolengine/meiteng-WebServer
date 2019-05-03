@@ -34,7 +34,9 @@ class AccountHandler {
         if (!result[1].rows[0].passed) {
             return [false, createError(403, "Password error.")];
         }
-        return [true, { id: result[1].rows[0].id, flag: result[1].rows[0].flag }];
+        const ret = { id: result[1].rows[0].id, flag: result[1].rows[0].flag };
+        ret['totals'] = await db.getTotals(ret.id, ret.flag);
+        return [true, ret];
     }
 }
 

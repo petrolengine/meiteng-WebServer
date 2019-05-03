@@ -165,6 +165,15 @@ router.post('/GetAreaList', (req, res, next) => {
   areaHandler.get_area_list(req.body).then((result) => __c(req, res, result, next));
 });
 
+/* GET area list. */
+router.post('/GetAreaList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.get_area_list2(req.body).then((result) => __c(req, res, result, next));
+});
+
 /* ADD area. */
 router.post('/AddArea', (req, res, next) => {
   if (!req.user) {

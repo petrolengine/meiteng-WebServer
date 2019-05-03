@@ -24,7 +24,7 @@ router.post('/login', (req, res, next) => {
       jwt: "Bearer " + token,
       id: result[1].id,
       flag: result[1].flag,
-      totals: db.global_data
+      totals: result[1].totals,
     }
     res.json(ret);
   });
