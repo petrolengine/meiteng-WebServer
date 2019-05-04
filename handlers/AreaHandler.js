@@ -94,6 +94,18 @@ class AreaHandler {
         }
         return [true, result[1].rows[0]];
     }
+
+    /**
+     * quick area name
+     * @param {string} key search key
+     */
+    async area_qsearch(key) {
+        const result = await db.query("mt_area_quick_search", ['%' + key + '%']);
+        if (!result[0]) {
+            return [false, createError(500)];
+        }
+        return [true, result[1].rows];
+    }
 }
 
 module.exports = AreaHandler;

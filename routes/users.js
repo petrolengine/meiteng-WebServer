@@ -138,6 +138,15 @@ router.post('/AddLandlord', (req, res, next) => {
   landlordHandler.add_landlord(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
+/* Quick search landlord */
+router.post('/QSearchLandlord', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.landlord_qsearch(req.user, req.body.key).then((result) => __c(req, res, result, next));
+});
+
 /* GET tenant list. */
 router.post('/GetTenantList', (req, res, next) => {
   if (!req.user) {
@@ -219,6 +228,14 @@ router.post('/SetAreaInfo', (req, res, next) => {
   areaHandler.set_area_info(req.body).then((result) => __c(req, res, result, next));
 });
 
+/* Quick search area names */
+router.post('/QSearchArea', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.area_qsearch(req.body.key).then((result) => __c(req, res, result, next));
+});
 
 /* Search */
 router.post('/Search', (req, res, next) => {

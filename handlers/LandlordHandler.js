@@ -60,6 +60,19 @@ class LandlordHandler {
     }
 
     /**
+     * Landlord quick search
+     * @param {*} userData user data
+     * @param {string} key search key
+     */
+    async landlord_qsearch(userData, key) {
+        const result = await db.query("mt_landlord_quick_search", ['%' + key + '%', userData.id, userData.flag]);
+        if (!result[0]) {
+            return [false, createError(500)];
+        }
+        return [true, result[1].rows];
+    }
+
+    /**
      * Get landlord info
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)

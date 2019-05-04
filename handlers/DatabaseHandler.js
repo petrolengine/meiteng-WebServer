@@ -92,7 +92,16 @@ class DatabaseHandler {
             const totals = await this.getTotals(id, flags);
             return totals[type];
         }
-        const result = await this.query(`mt_get_${type}_count_by_key`, ['%' + key + '%', id, flags]);
+        let result;
+        switch (type) {
+            case "area":
+            case "staff":
+                result = await this.query(`mt_get_${type}_count_by_key`, ['%' + key + '%']);
+                break;
+            default:
+                result = await this.query(`mt_get_${type}_count_by_key`, ['%' + key + '%', id, flags]);
+                break;
+        }
         if (!result[0] || result[1].rowCount !== 1) {
             return 0;
         }
