@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class LandlordHandler {
@@ -19,8 +19,8 @@ class LandlordHandler {
      * Get landlord list
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
-     * @param {*} userData user data
-     * @param {*} info request
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_landlord_list(userData, info) {
@@ -44,8 +44,8 @@ class LandlordHandler {
      * Get landlord list2
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
-     * @param {*} userData user data
-     * @param {*} info request
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_landlord_list2(userData, info) {
@@ -61,7 +61,7 @@ class LandlordHandler {
 
     /**
      * Landlord quick search
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {string} key search key
      */
     async landlord_qsearch(userData, key) {
@@ -76,7 +76,7 @@ class LandlordHandler {
      * Get landlord info
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {number} id landlord id
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -93,7 +93,7 @@ class LandlordHandler {
 
     /**
      * Set landlord info
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info landlord info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -117,7 +117,7 @@ class LandlordHandler {
 
     /**
      * Add landlord
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info landlord info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -141,4 +141,4 @@ class LandlordHandler {
     }
 }
 
-module.exports = LandlordHandler;
+module.exports = LandlordHandler.instance;

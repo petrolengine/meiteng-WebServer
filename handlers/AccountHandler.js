@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class AccountHandler {
@@ -40,4 +40,4 @@ class AccountHandler {
     }
 }
 
-module.exports = AccountHandler;
+module.exports = AccountHandler.instance;

@@ -21,18 +21,6 @@ class DatabaseHandler {
     }
 
     /**
-     * Get init data from database
-     */
-    async init() {
-        try {
-            logger.info(JSON.stringify(this.global_data));
-        } catch (e) {
-            console.error(e);
-            process.exit(-1);
-        }
-    }
-
-    /**
      * Query with database, return false when init is not finished.
      * @param {string} queryText sql
      * @param {?any[]} values can be null
@@ -58,13 +46,13 @@ class DatabaseHandler {
 
     __onDbError(err, client) {
         console.log("on db error");
-        console.error(err);
+        logger.error(err);
     }
 
     /**
      * Get totals for staff id
-     * @param {*} id Staff id
-     * @param {*} flags Staff flags
+     * @param {number} id Staff id
+     * @param {number} flags Staff flags
      * @returns {Promise<*>} Promise<*>
      */
     async getTotals(id, flags) {
@@ -109,4 +97,4 @@ class DatabaseHandler {
     }
 }
 
-module.exports = DatabaseHandler;
+module.exports = DatabaseHandler.instance;

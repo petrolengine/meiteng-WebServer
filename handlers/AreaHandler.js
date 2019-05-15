@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class AreaHandler {
@@ -17,6 +17,7 @@ class AreaHandler {
 
     /**
      * Get area list
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_area_list(info) {
@@ -39,7 +40,7 @@ class AreaHandler {
 
     /**
      * Get area list2
-     * @param {*} info
+     * @param {{page: number, prePage: number, key: string}} info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_area_list2(userData, info) {
@@ -108,4 +109,4 @@ class AreaHandler {
     }
 }
 
-module.exports = AreaHandler;
+module.exports = AreaHandler.instance;

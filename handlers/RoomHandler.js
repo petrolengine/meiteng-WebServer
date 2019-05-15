@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class RoomHandler {
@@ -17,7 +17,7 @@ class RoomHandler {
 
     /**
      * Get room list
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {number} offset database offset
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -34,13 +34,14 @@ class RoomHandler {
 
     /**
      * Add room
-     * @param {*} userDate user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info room info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
-    async add_room(userDate, info) {
-
+    async add_room(userData, info) {
+        console.log(info);
+        return [true, {}];
     }
 }
 
-module.exports = RoomHandler;
+module.exports = RoomHandler.instance;

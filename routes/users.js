@@ -3,11 +3,11 @@
 const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
-const roomHandler = require('../handlers/RoomHandler').instance;
-const staffHandler = require('../handlers/StaffHandler').instance;
-const landlordHandler = require('../handlers/LandlordHandler').instance;
-const tenantHandler = require('../handlers/TenantHandler').instance;
-const areaHandler = require('../handlers/AreaHandler').instance;
+const roomHandler = require('../handlers/RoomHandler');
+const staffHandler = require('../handlers/StaffHandler');
+const landlordHandler = require('../handlers/LandlordHandler');
+const tenantHandler = require('../handlers/TenantHandler');
+const areaHandler = require('../handlers/AreaHandler');
 
 function __c(req, res, result, next) {
   if (!result[0]) {
@@ -36,7 +36,7 @@ router.post('/AddRoom', (req, res, next) => {
     next(createError(401));
     return;
   }
-  roomHandler.add_room(req.user, req.body.offset).then((result) => __c(req, res, result, next));
+  roomHandler.add_room(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET staff list. */
