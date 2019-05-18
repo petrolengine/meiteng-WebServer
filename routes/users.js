@@ -21,22 +21,40 @@ function __c(req, res, result, next) {
   }
 }
 
-/* GET room list. */
-router.post('/GetRoomList', (req, res, next) => {
+/* GET room sale list. */
+router.post('/GetRoomSaleList', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  roomHandler.get_room_list(req.user, req.body.offset).then((result) => __c(req, res, result, next));
+  roomHandler.get_room_sale_list(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
-/* ADD room. */
-router.post('/AddRoom', (req, res, next) => {
+/* GET room rent list. */
+router.post('/GetRoomRentList', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  roomHandler.add_room(req.user, req.body).then((result) => __c(req, res, result, next));
+  roomHandler.get_room_rent_list(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* ADD sale room. */
+router.post('/AddSaleRoom', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  roomHandler.add_sale_room(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* ADD rent room. */
+router.post('/AddRentRoom', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  roomHandler.add_rent_room(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET staff list. */
