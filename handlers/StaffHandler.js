@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class StaffHandler {
@@ -17,9 +17,8 @@ class StaffHandler {
 
     /**
      * Get staff list, UserData.flag >= get UserData.flag
-     * @param {*} userData user data
-     * @param {number} page current page, start with 0
-     * @param {number} prePage num of staffs pre page
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_staff_list(userData, info) {
@@ -40,8 +39,25 @@ class StaffHandler {
     }
 
     /**
+     * Get staff list2, UserData.flag >= get UserData.flag
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_staff_list2(userData, info) {
+        const key = info.key || "";
+        const result = await this.get_staff_list(userData, info);
+        if (!result[0]) {
+            return result;
+        }
+        const ret = { data: result[1], total: 0 };
+        ret.total = await db.getTotal("staff", userData.id, userData.flag, key);
+        return [true, ret];
+    }
+
+    /**
      * Get staff info, UserData.flag >= get UserData.flag
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {number} id staff id
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -62,7 +78,7 @@ class StaffHandler {
 
     /**
      * Set staff info, UserData.flag > set UserData.flag
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info new staff info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -86,7 +102,7 @@ class StaffHandler {
 
     /**
      * Add staff
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info new staff info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -115,7 +131,7 @@ class StaffHandler {
 
     /**
      * Delete staff, UserData.flag > delete UserData.flag
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {number} id staff id to delete
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -139,4 +155,4 @@ class StaffHandler {
     }
 }
 
-module.exports = StaffHandler;
+module.exports = StaffHandler.instance;

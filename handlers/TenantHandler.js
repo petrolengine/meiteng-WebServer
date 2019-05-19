@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class TenantHandler {
@@ -19,9 +19,8 @@ class TenantHandler {
      * Get tenant list
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
-     * @param {*} userData user data
-     * @param {number} page current page, start with 0
-     * @param {number} prePage num of staffs pre page
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_tenant_list(userData, info) {
@@ -42,10 +41,29 @@ class TenantHandler {
     }
 
     /**
+     * Get tenant list2
+     * UserData.flag > get UserData.flag or
+     * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
+     * @param {{id: number, flag: number, name: string}} userData user data
+     * @param {{page: number, prePage: number, key: string}} info request
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_tenant_list2(userData, info) {
+        const key = info.key || "";
+        const result = await this.get_tenant_list(userData, info);
+        if (!result[0]) {
+            return result;
+        }
+        const ret = { data: result[1], total: 0 };
+        ret.total = await db.getTotal("tenant", userData.id, userData.flag, key);
+        return [true, ret];
+    }
+
+    /**
      * Get tenant info
      * UserData.flag > get UserData.flag or
      * (UserData.flag = get UserData.flag and UserData.id = get UserData.id)
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {number} id tenant id
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -62,7 +80,7 @@ class TenantHandler {
 
     /**
      * Set tenant info
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info tenant info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -86,7 +104,7 @@ class TenantHandler {
 
     /**
      * Add tenant
-     * @param {*} userData user data
+     * @param {{id: number, flag: number, name: string}} userData user data
      * @param {*} info tenant info
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
@@ -110,4 +128,4 @@ class TenantHandler {
     }
 }
 
-module.exports = TenantHandler;
+module.exports = TenantHandler.instance;

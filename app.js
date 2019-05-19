@@ -31,7 +31,7 @@ const app = express();
 // init logger
 require("./handlers/LoggerHandler");
 // init db
-require("./handlers/DatabaseHandler").instance.init();
+require("./handlers/DatabaseHandler");
 
 app.use(morgan('common', {
     stream: fs.createWriteStream(

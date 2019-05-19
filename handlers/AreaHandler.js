@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class AreaHandler {
@@ -17,6 +17,7 @@ class AreaHandler {
 
     /**
      * Get area list
+     * @param {{page: number, prePage: number, key: string}} info request
      * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
      */
     async get_area_list(info) {
@@ -35,6 +36,22 @@ class AreaHandler {
             return [false, createError(500)];
         }
         return [true, result[1].rows];
+    }
+
+    /**
+     * Get area list2
+     * @param {{page: number, prePage: number, key: string}} info
+     * @returns {Promise<[boolean, any]>} Promise<[boolean, any]>
+     */
+    async get_area_list2(userData, info) {
+        const key = info.key || "";
+        const result = await this.get_area_list(info);
+        if (!result[0]) {
+            return result;
+        }
+        const ret = { data: result[1], total: 0 };
+        ret.total = await db.getTotal("area", userData.id, userData.flag, key);
+        return [true, ret];
     }
 
     /**
@@ -78,6 +95,18 @@ class AreaHandler {
         }
         return [true, result[1].rows[0]];
     }
+
+    /**
+     * quick area name
+     * @param {string} key search key
+     */
+    async area_qsearch(key) {
+        const result = await db.query("mt_area_quick_search", ['%' + key + '%']);
+        if (!result[0]) {
+            return [false, createError(500)];
+        }
+        return [true, result[1].rows];
+    }
 }
 
-module.exports = AreaHandler;
+module.exports = AreaHandler.instance;

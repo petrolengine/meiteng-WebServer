@@ -3,11 +3,11 @@
 const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
-const roomHandler = require('../handlers/RoomHandler').instance;
-const staffHandler = require('../handlers/StaffHandler').instance;
-const landlordHandler = require('../handlers/LandlordHandler').instance;
-const tenantHandler = require('../handlers/TenantHandler').instance;
-const areaHandler = require('../handlers/AreaHandler').instance;
+const roomHandler = require('../handlers/RoomHandler');
+const staffHandler = require('../handlers/StaffHandler');
+const landlordHandler = require('../handlers/LandlordHandler');
+const tenantHandler = require('../handlers/TenantHandler');
+const areaHandler = require('../handlers/AreaHandler');
 
 function __c(req, res, result, next) {
   if (!result[0]) {
@@ -21,22 +21,40 @@ function __c(req, res, result, next) {
   }
 }
 
-/* GET room list. */
-router.post('/GetRoomList', (req, res, next) => {
+/* GET room sale list. */
+router.post('/GetRoomSaleList', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  roomHandler.get_room_list(req.user, req.body.offset).then((result) => __c(req, res, result, next));
+  roomHandler.get_room_sale_list(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
-/* ADD room. */
-router.post('/AddRoom', (req, res, next) => {
+/* GET room rent list. */
+router.post('/GetRoomRentList', (req, res, next) => {
   if (!req.user) {
     next(createError(401));
     return;
   }
-  roomHandler.add_room(req.user, req.body.offset).then((result) => __c(req, res, result, next));
+  roomHandler.get_room_rent_list(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* ADD sale room. */
+router.post('/AddSaleRoom', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  roomHandler.add_sale_room(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* ADD rent room. */
+router.post('/AddRentRoom', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  roomHandler.add_rent_room(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET staff list. */
@@ -46,6 +64,15 @@ router.post('/GetStaffList', (req, res, next) => {
     return;
   }
   staffHandler.get_staff_list(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* GET staff list2. */
+router.post('/GetStaffList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  staffHandler.get_staff_list2(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET staff info. */
@@ -93,6 +120,15 @@ router.post('/GetLandlordList', (req, res, next) => {
   landlordHandler.get_landlord_list(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
+/* GET landlord list2. */
+router.post('/GetLandlordList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.get_landlord_list2(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
 /* GET landlord info. */
 router.post('/GetLandlordInfo', (req, res, next) => {
   if (!req.user) {
@@ -120,6 +156,15 @@ router.post('/AddLandlord', (req, res, next) => {
   landlordHandler.add_landlord(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
+/* Quick search landlord */
+router.post('/QSearchLandlord', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  landlordHandler.landlord_qsearch(req.user, req.body.key).then((result) => __c(req, res, result, next));
+});
+
 /* GET tenant list. */
 router.post('/GetTenantList', (req, res, next) => {
   if (!req.user) {
@@ -127,6 +172,15 @@ router.post('/GetTenantList', (req, res, next) => {
     return;
   }
   tenantHandler.get_tenant_list(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
+/* GET tenant list2. */
+router.post('/GetTenantList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  tenantHandler.get_tenant_list2(req.user, req.body).then((result) => __c(req, res, result, next));
 });
 
 /* GET tenant info. */
@@ -165,6 +219,15 @@ router.post('/GetAreaList', (req, res, next) => {
   areaHandler.get_area_list(req.body).then((result) => __c(req, res, result, next));
 });
 
+/* GET area list. */
+router.post('/GetAreaList2', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.get_area_list2(req.user, req.body).then((result) => __c(req, res, result, next));
+});
+
 /* ADD area. */
 router.post('/AddArea', (req, res, next) => {
   if (!req.user) {
@@ -183,6 +246,14 @@ router.post('/SetAreaInfo', (req, res, next) => {
   areaHandler.set_area_info(req.body).then((result) => __c(req, res, result, next));
 });
 
+/* Quick search area names */
+router.post('/QSearchArea', (req, res, next) => {
+  if (!req.user) {
+    next(createError(401));
+    return;
+  }
+  areaHandler.area_qsearch(req.body.key).then((result) => __c(req, res, result, next));
+});
 
 /* Search */
 router.post('/Search', (req, res, next) => {

@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require('./DatabaseHandler').instance;
+const db = require('./DatabaseHandler');
 const createError = require('http-errors');
 
 class AccountHandler {
@@ -34,8 +34,10 @@ class AccountHandler {
         if (!result[1].rows[0].passed) {
             return [false, createError(403, "Password error.")];
         }
-        return [true, { id: result[1].rows[0].id, flag: result[1].rows[0].flag }];
+        const ret = { id: result[1].rows[0].id, flag: result[1].rows[0].flag };
+        ret['totals'] = await db.getTotals(ret.id, ret.flag);
+        return [true, ret];
     }
 }
 
-module.exports = AccountHandler;
+module.exports = AccountHandler.instance;
